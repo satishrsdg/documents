@@ -1,12 +1,12 @@
 # Data-services Platform - Integration Principles
 
-Ingesting data from multiple sources, normalizing the data published and making it available for end user systems is an important task in all of the projects. One of the architectural frameworks is `Event based streaming ETL pipelines`
+Ingesting data from multiple sources, normalizing the data published and making it available for end user systems is an important task in most of the data projects. One of the newest ETL architectural frameworks is `Event based streaming ETL pipelines`
 
 <img src="https://cdn.confluent.io/wp-content/uploads/etl_streaming.png" width="400"/>
 
 *source: [ETL Pipelines] (https://www.confluent.io/blog/building-real-time-streaming-etl-pipeline-20-minutes/)*
 
-The following integration principles provide a good framework for streaming data
+The following integration principles provide a good framework for streaming ETL
 
 1. ***Publish only once***: Each raw data source or a consumable producer will publish events only once, irrespective of the number of consumers. Any consumer should have access to entirety of the event store from the point of full refresh
 
@@ -25,9 +25,7 @@ The following integration principles provide a good framework for streaming data
 
 6. ***Dual read modes***: Data Services Platform should provide for two kinds of data read modes:
    * ***Off-set based delta streams***: Subscribers receive delta changes (flowing since the last full refresh) from their current read location. 
-    * This is delta stream is to be made available for a pre-agreed duration say 14 days
-    * ***Not*** immediate concern for PDS
-
+ 
    * ***__Latest__ version of 100% of unique records***: A materialized view of the latest state of the entire universe of unique records in an event bucket starting from the recent full-refresh of events into that bucket.
    Example: A full refresh happened on 1st January. As of 31st December there are 100,000 unique records with multiple events published for each unique record. Total number of events are in the region of 1M. Record_1234 has 100 updates with last update on 31st Dec. Record_abcd has 1 update with last update on 1st Jan. Only 100,000 events to be made available with latest update for each unique record. Record_1234 available with update published on 31st Dec. Record_abcd available with update published on 1st Jan. Overall, consumers exposed only to 100,000 records
 
